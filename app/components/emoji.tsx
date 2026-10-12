@@ -6,7 +6,7 @@ import EmojiPicker, {
 
 import { ModelType } from "../store";
 
-import BotIconDefault from "../icons/llm-icons/default.svg";
+import BotIconDefault from "../icons/robot.svg";
 import BotIconOpenAI from "../icons/llm-icons/openai.svg";
 import BotIconGemini from "../icons/llm-icons/gemini.svg";
 import BotIconGemma from "../icons/llm-icons/gemma.svg";
@@ -49,52 +49,9 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
   let LlmIcon = BotIconDefault;
 
   if (props.model) {
-    const modelName = props.model.toLowerCase();
-
-    if (
-      modelName.startsWith("gpt") ||
-      modelName.startsWith("chatgpt") ||
-      modelName.startsWith("dall-e") ||
-      modelName.startsWith("dalle") ||
-      modelName.startsWith("o1") ||
-      modelName.startsWith("o3")
-    ) {
-      LlmIcon = BotIconOpenAI;
-    } else if (modelName.startsWith("gemini")) {
-      LlmIcon = BotIconGemini;
-    } else if (modelName.startsWith("gemma")) {
-      LlmIcon = BotIconGemma;
-    } else if (modelName.startsWith("claude")) {
-      LlmIcon = BotIconClaude;
-    } else if (modelName.includes("llama")) {
-      LlmIcon = BotIconMeta;
-    } else if (modelName.startsWith("mixtral") || modelName.startsWith("codestral")) {
-      LlmIcon = BotIconMistral;
-    } else if (modelName.includes("deepseek")) {
-      LlmIcon = BotIconDeepseek;
-    } else if (modelName.startsWith("moonshot")) {
-      LlmIcon = BotIconMoonshot;
-    } else if (modelName.startsWith("qwen")) {
-      LlmIcon = BotIconQwen;
-    } else if (modelName.startsWith("ernie")) {
-      LlmIcon = BotIconWenxin;
-    } else if (modelName.startsWith("grok")) {
-      LlmIcon = BotIconGrok;
-    } else if (modelName.startsWith("hunyuan")) {
-      LlmIcon = BotIconHunyuan;
-    } else if (modelName.startsWith("doubao") || modelName.startsWith("ep-")) {
-      LlmIcon = BotIconDoubao;
-    } else if (
-      modelName.includes("glm") ||
-      modelName.startsWith("cogview-") ||
-      modelName.startsWith("cogvideox-")
-    ) {
-      LlmIcon = BotIconChatglm;
-    }
-
     return (
-      <div className="no-dark">
-        <LlmIcon className="user-avatar" width={30} height={30} />
+      <div className="user-avatar no-dark">
+        <LlmIcon width={16} height={16} />
       </div>
     );
   }

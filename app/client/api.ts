@@ -297,7 +297,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
         : ""
       : isAI302
       ? accessStore.ai302ApiKey
-      : accessStore.openaiApiKey;
+      : (getClientConfig()?.hasApigee ? "" : accessStore.openaiApiKey);
     return {
       isGoogle,
       isAzure,

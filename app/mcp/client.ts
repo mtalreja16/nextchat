@@ -12,9 +12,15 @@ export async function createClient(
 ): Promise<Client> {
   logger.info(`Creating client for ${id}...`);
 
+  const expandedArgs = config.args.map((arg) => {
+    return arg.replace(/\${([A-Za-z0-9_]+)}/g, (_, varName) => {
+      return process.env[varName] ?? "";
+    });
+  });
+
   const transport = new StdioClientTransport({
     command: config.command,
-    args: config.args,
+    args: expandedArgs,
     env: {
       ...Object.fromEntries(
         Object.entries(process.env)

@@ -149,6 +149,7 @@ export async function initializeMcpSystem() {
     }
 
     const config = await getMcpConfigFromFile();
+    logger.info("Loaded MCP Config: " + JSON.stringify(config));
     // 初始化所有客户端
     for (const [clientId, serverConfig] of Object.entries(config.mcpServers)) {
       await initializeSingleClient(clientId, serverConfig);

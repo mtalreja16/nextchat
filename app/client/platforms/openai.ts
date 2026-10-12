@@ -88,6 +88,9 @@ export class ChatGPTApi implements LLMApi {
     let baseUrl = "";
 
     const isAzure = path.includes("deployments");
+    const clientConfig = getClientConfig();
+    const hasApigee = !!clientConfig?.hasApigee;
+
     if (accessStore.useCustomConfig) {
       if (isAzure && !accessStore.isValidAzure()) {
         throw Error(
@@ -95,7 +98,7 @@ export class ChatGPTApi implements LLMApi {
         );
       }
 
-      baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
+      baseUrl = isAzure ? accessStore.azureUrl : (hasApigee ? "" : accessStore.openaiUrl);
     }
 
     if (baseUrl.length === 0) {

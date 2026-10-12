@@ -75,6 +75,11 @@ async function request(req: NextRequest, apiKey: string) {
 
   let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Google, "");
 
+  if (baseUrl.includes("llm-ai-gateway")) {
+    path = path.replace(/models\/gemini-[a-zA-Z0-9.-]+/g, "models/gemini-2.5-flash");
+    console.log(`[Google Proxy] Overwrote model path: ${path}`);
+  }
+
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
   }
@@ -104,6 +109,7 @@ async function request(req: NextRequest, apiKey: string) {
       "x-goog-api-key":
         req.headers.get("x-goog-api-key") ||
         (req.headers.get("Authorization") ?? "").replace("Bearer ", ""),
+      "Accept-Encoding": "identity",
     },
     method: req.method,
     body: req.body,

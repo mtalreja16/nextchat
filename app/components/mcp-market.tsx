@@ -132,6 +132,52 @@ export function McpMarketPage() {
     loadInitialState();
   }, [mcpEnabled]);
 
+  const [customPresets, setCustomPresets] = useState<PresetServer[]>([]);
+
+  // Synchronize local custom servers into the customPresets list
+  useEffect(() => {
+    if (!config) return;
+
+    const custom: PresetServer[] = [];
+    Object.entries(config.mcpServers).forEach(([id, serverConfig]) => {
+      const isApigeeMcp = id === "apigee-pets-mcp" || id === "apigee-atlassian-mcp";
+      custom.push({
+        id,
+        name: id === "apigee-pets-mcp" ? "Apigee Pets MCP" : id === "apigee-atlassian-mcp" ? "Apigee Atlassian MCP" : id,
+        description: id === "apigee-pets-mcp"
+          ? "Apigee API Key-controlled Petstore Model Context Protocol server."
+          : id === "apigee-atlassian-mcp"
+          ? "Atlassian Jira/Confluence MCP Server via 3-legged OAuth."
+          : `Custom local MCP server running: ${serverConfig.command} ${serverConfig.args.slice(0, 3).join(" ")}...`,
+        repo: "",
+        tags: isApigeeMcp ? ["apigee", "mcp"] : ["custom", "local"],
+        command: serverConfig.command,
+        baseArgs: serverConfig.args,
+        configurable: isApigeeMcp,
+        ...(isApigeeMcp && {
+          configSchema: {
+            properties: {
+              APIGEE_API_KEY: {
+                type: "string",
+                description: id === "apigee-atlassian-mcp"
+                  ? "OAuth Access Token (leave empty to use 'Authorize' button)"
+                  : "API Key (Bronze or Silver key to determine access rights)",
+              },
+            },
+          },
+          argsMapping: {
+            APIGEE_API_KEY: {
+              type: "env",
+              key: "APIGEE_API_KEY",
+            },
+          },
+        }),
+      });
+    });
+
+    setCustomPresets(custom);
+  }, [config]);
+
   // 加载当前编辑服务器的配置
   useEffect(() => {
     if (!editingServerId || !config) return;
@@ -448,17 +494,21 @@ export function McpMarketPage() {
 
   // 渲染服务器列表
   const renderServerList = () => {
-    if (loadingPresets) {
-      return (
-        <div className={styles["loading-container"]}>
-          <div className={styles["loading-text"]}>
-            Loading preset server list...
-          </div>
-        </div>
-      );
-    }
+    const allServers = [
+      ...customPresets,
+      ...presetServers.filter((p) => !customPresets.some((c) => c.id === p.id)),
+    ];
 
-    if (!Array.isArray(presetServers) || presetServers.length === 0) {
+    if (allServers.length === 0) {
+      if (loadingPresets) {
+        return (
+          <div className={styles["loading-container"]}>
+            <div className={styles["loading-text"]}>
+              Loading preset server list...
+            </div>
+          </div>
+        );
+      }
       return (
         <div className={styles["empty-container"]}>
           <div className={styles["empty-text"]}>No servers available</div>
@@ -466,7 +516,7 @@ export function McpMarketPage() {
       );
     }
 
-    return presetServers
+    return allServers
       .filter((server) => {
         if (searchText.length === 0) return true;
         const searchLower = searchText.toLowerCase();
@@ -572,6 +622,16 @@ export function McpMarketPage() {
             <div className={styles["mcp-market-actions"]}>
               {isServerAdded(server.id) ? (
                 <>
+                  {server.id === "apigee-atlassian-mcp" && (
+                    <IconButton
+                      icon={<EditIcon />}
+                      text="Authorize"
+                      onClick={() => {
+                        window.location.href = "/api/auth/atlassian";
+                      }}
+                      disabled={isLoading}
+                    />
+                  )}
                   {server.configurable && (
                     <IconButton
                       icon={<EditIcon />}

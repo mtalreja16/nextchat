@@ -32,6 +32,16 @@ const nextConfig = {
   },
   experimental: {
     forceSwcTransforms: true,
+    serverActions: {
+      allowedOrigins: [
+        "localhost:8080",
+        "localhost:3000",
+        "127.0.0.1:8080",
+        "127.0.0.1:3000",
+        "nextchat-qlrpst5xaq-uw.a.run.app",
+        "nextchat-690971141897.us-west1.run.app"
+      ]
+    }
   },
 };
 

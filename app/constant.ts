@@ -112,8 +112,8 @@ export const UNFINISHED_INPUT = (id: string) => "unfinished-input-" + id;
 
 export const STORAGE_KEY = "chatgpt-next-web";
 
-export const REQUEST_TIMEOUT_MS = 60000;
-export const REQUEST_TIMEOUT_MS_FOR_THINKING = REQUEST_TIMEOUT_MS * 5;
+export const REQUEST_TIMEOUT_MS = 180000;
+export const REQUEST_TIMEOUT_MS_FOR_THINKING = 600000;
 
 export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 
@@ -420,7 +420,7 @@ You are an AI assistant with access to system tools. Your role is to help users 
    
 `;
 
-export const SUMMARIZE_MODEL = "gpt-4o-mini";
+export const SUMMARIZE_MODEL = "gemini-2.5-flash";
 export const GEMINI_SUMMARIZE_MODEL = "gemini-pro";
 export const DEEPSEEK_SUMMARIZE_MODEL = "deepseek-chat";
 
@@ -499,6 +499,8 @@ export const VISION_MODEL_REGEXES = [
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
 
 const openaiModels = [
+  "gemini-2.5-flash",
+  "gemini-2.5-pro",
   // As of July 2024, gpt-4o-mini should be used in place of gpt-3.5-turbo,
   // as it is cheaper, more capable, multimodal, and just as fast. gpt-3.5-turbo is still available for use in the API.
   "gpt-3.5-turbo",

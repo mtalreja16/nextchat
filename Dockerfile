@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 
 FROM base AS deps
 
@@ -18,6 +18,9 @@ RUN apk update && apk add --no-cache git
 ENV OPENAI_API_KEY=""
 ENV GOOGLE_API_KEY=""
 ENV CODE=""
+ENV BASE_URL="https://34-54-221-149.nip.io/v2/samples/llm-ai-gateway"
+ENV APIGEE_API_KEY="nvBdsIrBcybvX2DEp3bIC1tzfZE0nnHGeaGPvXShmSjwfU7A"
+ENV ENABLE_MCP="true"
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -29,12 +32,15 @@ FROM base AS runner
 WORKDIR /app
 
 RUN apk add proxychains-ng
+RUN npm install -g mcp-remote
 
 ENV PROXY_URL=""
 ENV OPENAI_API_KEY=""
 ENV GOOGLE_API_KEY=""
 ENV CODE=""
-ENV ENABLE_MCP=""
+ENV ENABLE_MCP="true"
+ENV BASE_URL="https://34-54-221-149.nip.io/v2/samples/llm-ai-gateway"
+ENV APIGEE_API_KEY="nvBdsIrBcybvX2DEp3bIC1tzfZE0nnHGeaGPvXShmSjwfU7A"
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
@@ -42,7 +48,7 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/.next/server ./.next/server
 
 RUN mkdir -p /app/app/mcp && chmod 777 /app/app/mcp
-COPY --from=builder /app/app/mcp/mcp_config.default.json /app/app/mcp/mcp_config.json
+COPY --from=builder /app/app/mcp/mcp_config.json /app/app/mcp/mcp_config.json
 
 EXPOSE 3000
 

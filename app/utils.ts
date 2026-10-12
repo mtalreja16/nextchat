@@ -303,6 +303,10 @@ export function getTimeoutMSByModel(model: string) {
     model.startsWith("dalle") ||
     model.startsWith("o1") ||
     model.startsWith("o3") ||
+    model.startsWith("auto:judge") ||
+    model.includes("claude") ||
+    model.includes("opus") ||
+    model.includes("pro") ||
     model.includes("deepseek-r") ||
     model.includes("-thinking")
   )
